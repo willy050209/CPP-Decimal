@@ -40,28 +40,28 @@ public:
     /// <summary>
     /// 取得 limbs 資料指標（若在 SBO 內則回傳 m_sbo，否則回傳 m_heap）。
     /// </summary>
-    NUMERIC_NODISCARD NUMERIC_ALWAYS_INLINE NUMERIC_CONSTEXPR_20 uint64_t* data() noexcept {
+    NUMERIC_NODISCARD NUMERIC_CONSTEXPR_20 uint64_t* data() noexcept {
         return m_heap != nullptr ? m_heap : m_sbo;
     }
 
     /// <summary>
     /// 取得 limbs 常數資料指標（若在 SBO 內則回傳 m_sbo，否則回傳 m_heap）。
     /// </summary>
-    NUMERIC_NODISCARD NUMERIC_ALWAYS_INLINE NUMERIC_CONSTEXPR_20 const uint64_t* data() const noexcept {
+    NUMERIC_NODISCARD NUMERIC_CONSTEXPR_20 const uint64_t* data() const noexcept {
         return m_heap != nullptr ? m_heap : m_sbo;
     }
 
     /// <summary>
     /// 下標運算子，存取指定索引之 limb。
     /// </summary>
-    NUMERIC_NODISCARD NUMERIC_ALWAYS_INLINE NUMERIC_CONSTEXPR_20 uint64_t& operator[](size_t idx) noexcept {
+    NUMERIC_NODISCARD NUMERIC_CONSTEXPR_20 uint64_t& operator[](size_t idx) noexcept {
         return data()[idx];
     }
 
     /// <summary>
     /// 常數下標運算子，存取指定索引之 limb。
     /// </summary>
-    NUMERIC_NODISCARD NUMERIC_ALWAYS_INLINE NUMERIC_CONSTEXPR_20 const uint64_t& operator[](size_t idx) const noexcept {
+    NUMERIC_NODISCARD NUMERIC_CONSTEXPR_20 const uint64_t& operator[](size_t idx) const noexcept {
         return data()[idx];
     }
 
@@ -147,14 +147,14 @@ public:
                 m_sbo[1] = other.m_sbo[1];
                 m_capacity = SBO_CAPACITY;
             } else {
-                if (m_capacity < other.m_size) {
+                if (m_heap == nullptr || m_capacity < other.m_size) {
                     if (m_heap != nullptr) {
                         delete[] m_heap;
                     }
-                    m_capacity = other.m_capacity;
+                    m_capacity = (other.m_capacity > other.m_size) ? other.m_capacity : other.m_size;
                     m_heap = new uint64_t[m_capacity];
                 }
-                copy_limbs(m_heap, other.m_heap, other.m_size);
+                copy_limbs(m_heap, other.data(), other.m_size);
             }
             m_size = other.m_size;
             m_sign = other.m_sign;
@@ -197,7 +197,7 @@ public:
     /// 檢查當前是否使用 SBO 內建緩衝區儲存。
     /// </summary>
     /// <returns>若使用 SBO 則回傳 true，堆積配置則回傳 false</returns>
-    NUMERIC_NODISCARD NUMERIC_ALWAYS_INLINE NUMERIC_CONSTEXPR_20 bool is_sbo() const noexcept {
+    NUMERIC_NODISCARD NUMERIC_CONSTEXPR_20 bool is_sbo() const noexcept {
         return m_heap == nullptr;
     }
 
@@ -348,17 +348,21 @@ public:
     static NUMERIC_CONSTEXPR_20 uint64_t mul64_wide(uint64_t a, uint64_t b, uint64_t& hi) noexcept {
 #if (NUMERIC_CPLUSPLUS >= NUMERIC_CXX_20)
         if (std::is_constant_evaluated()) {
-            uint64_t a_lo = static_cast<uint32_t>(a);
-            uint64_t a_hi = a >> 32;
-            uint64_t b_lo = static_cast<uint32_t>(b);
-            uint64_t b_hi = b >> 32;
-            uint64_t p0 = a_lo * b_lo;
-            uint64_t p1 = a_lo * b_hi;
-            uint64_t p2 = a_hi * b_lo;
-            uint64_t p3 = a_hi * b_hi;
-            uint64_t mid = p1 + static_cast<uint32_t>(p0 >> 32) + static_cast<uint32_t>(p2);
-            hi = p3 + (p1 >> 32) + (p2 >> 32) + (mid >> 32);
-            return (mid << 32) | static_cast<uint32_t>(p0);
+            uint64_t u0 = static_cast<uint32_t>(a);
+            uint64_t u1 = a >> 32;
+            uint64_t v0 = static_cast<uint32_t>(b);
+            uint64_t v1 = b >> 32;
+
+            uint64_t w0 = u0 * v0;
+            uint64_t t = u1 * v0 + (w0 >> 32);
+            uint64_t w1 = t & 0xFFFFFFFFULL;
+            uint64_t w2 = t >> 32;
+            w1 += u0 * v1;
+            w2 += w1 >> 32;
+            w1 &= 0xFFFFFFFFULL;
+
+            hi = u1 * v1 + w2;
+            return (w1 << 32) | (w0 & 0xFFFFFFFFULL);
         }
 #endif
 #if defined(__SIZEOF_INT128__)
@@ -368,17 +372,21 @@ public:
 #elif defined(_MSC_VER) && (defined(_M_X64) || defined(_M_ARM64))
         return _umul128(a, b, &hi);
 #else
-        uint64_t a_lo = static_cast<uint32_t>(a);
-        uint64_t a_hi = a >> 32;
-        uint64_t b_lo = static_cast<uint32_t>(b);
-        uint64_t b_hi = b >> 32;
-        uint64_t p0 = a_lo * b_lo;
-        uint64_t p1 = a_lo * b_hi;
-        uint64_t p2 = a_hi * b_lo;
-        uint64_t p3 = a_hi * b_hi;
-        uint64_t mid = p1 + static_cast<uint32_t>(p0 >> 32) + static_cast<uint32_t>(p2);
-        hi = p3 + (p1 >> 32) + (p2 >> 32) + (mid >> 32);
-        return (mid << 32) | static_cast<uint32_t>(p0);
+        uint64_t u0 = static_cast<uint32_t>(a);
+        uint64_t u1 = a >> 32;
+        uint64_t v0 = static_cast<uint32_t>(b);
+        uint64_t v1 = b >> 32;
+
+        uint64_t w0 = u0 * v0;
+        uint64_t t = u1 * v0 + (w0 >> 32);
+        uint64_t w1 = t & 0xFFFFFFFFULL;
+        uint64_t w2 = t >> 32;
+        w1 += u0 * v1;
+        w2 += w1 >> 32;
+        w1 &= 0xFFFFFFFFULL;
+
+        hi = u1 * v1 + w2;
+        return (w1 << 32) | (w0 & 0xFFFFFFFFULL);
 #endif
     }
 
@@ -396,8 +404,9 @@ public:
             uint64_t q = 0;
             uint64_t r = hi;
             for (int i = 63; i >= 0; --i) {
+                uint64_t carry = (r >> 63) & 1;
                 r = (r << 1) | ((lo >> i) & 1);
-                if (r >= d) {
+                if (carry || r >= d) {
                     r -= d;
                     q |= (1ULL << i);
                 }
@@ -416,8 +425,9 @@ public:
         uint64_t q = 0;
         uint64_t r = hi;
         for (int i = 63; i >= 0; --i) {
+            uint64_t carry = (r >> 63) & 1;
             r = (r << 1) | ((lo >> i) & 1);
-            if (r >= d) {
+            if (carry || r >= d) {
                 r -= d;
                 q |= (1ULL << i);
             }
