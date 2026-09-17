@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 // Decimal.hpp
 // High-precision decimal floating-point facade class for CPP-Decimal.
@@ -996,7 +996,7 @@ inline std::string FormatDecimalToString(const decimal& d, int precision) {
     return res;
 }
 
-    NUMERIC_CONSTEXPR_20 inline DecimalConstantProxy::operator decimal() const {
+    NUMERIC_CONSTEXPR_20 DecimalConstantProxy::operator decimal() const {
         switch (kind) {
             case DecimalConstantKind::Zero:
                 return decimal(0);
@@ -1018,31 +1018,31 @@ inline std::string FormatDecimalToString(const decimal& d, int precision) {
         }
     }
 
-    NUMERIC_CONSTEXPR_20 inline decimal DecimalConstantProxy::operator()() const {
+    NUMERIC_CONSTEXPR_20 decimal DecimalConstantProxy::operator()() const {
         return static_cast<decimal>(*this);
     }
 
-    NUMERIC_CONSTEXPR_20 inline decimal DecimalConstantProxy::operator-() const {
+    NUMERIC_CONSTEXPR_20 decimal DecimalConstantProxy::operator-() const {
         return -static_cast<decimal>(*this);
     }
 
     template <typename T>
-    NUMERIC_CONSTEXPR_20 inline bool operator==(DecimalConstantProxy p, const T& other) {
+    NUMERIC_CONSTEXPR_20 bool operator==(DecimalConstantProxy p, const T& other) {
         return static_cast<decimal>(p) == other;
     }
 
     template <typename T>
-    NUMERIC_CONSTEXPR_20 inline bool operator==(const T& other, DecimalConstantProxy p) {
+    NUMERIC_CONSTEXPR_20 bool operator==(const T& other, DecimalConstantProxy p) {
         return other == static_cast<decimal>(p);
     }
 
     template <typename T>
-    NUMERIC_CONSTEXPR_20 inline bool operator!=(DecimalConstantProxy p, const T& other) {
+    NUMERIC_CONSTEXPR_20 bool operator!=(DecimalConstantProxy p, const T& other) {
         return static_cast<decimal>(p) != other;
     }
 
     template <typename T>
-    NUMERIC_CONSTEXPR_20 inline bool operator!=(const T& other, DecimalConstantProxy p) {
+    NUMERIC_CONSTEXPR_20 bool operator!=(const T& other, DecimalConstantProxy p) {
         return other != static_cast<decimal>(p);
     }
 
@@ -1056,7 +1056,7 @@ inline std::string FormatDecimalToString(const decimal& d, int precision) {
 /// <param name="rhs">右原生數值</param>
 /// <returns>邏輯及結果</returns>
 template <typename T, typename std::enable_if<std::is_integral<T>::value, int>::type = 0>
-NUMERIC_CONSTEXPR_20 inline bool operator&&(const decimal& lhs, T rhs) noexcept {
+NUMERIC_CONSTEXPR_20 bool operator&&(const decimal& lhs, T rhs) noexcept {
     return static_cast<bool>(lhs) && (rhs != 0);
 }
 
@@ -1068,7 +1068,7 @@ NUMERIC_CONSTEXPR_20 inline bool operator&&(const decimal& lhs, T rhs) noexcept 
 /// <param name="rhs">右 decimal</param>
 /// <returns>邏輯及結果</returns>
 template <typename T, typename std::enable_if<std::is_integral<T>::value, int>::type = 0>
-NUMERIC_CONSTEXPR_20 inline bool operator&&(T lhs, const decimal& rhs) noexcept {
+NUMERIC_CONSTEXPR_20 bool operator&&(T lhs, const decimal& rhs) noexcept {
     return (lhs != 0) && static_cast<bool>(rhs);
 }
 
@@ -1080,7 +1080,7 @@ NUMERIC_CONSTEXPR_20 inline bool operator&&(T lhs, const decimal& rhs) noexcept 
 /// <param name="rhs">右原生數值</param>
 /// <returns>邏輯或結果</returns>
 template <typename T, typename std::enable_if<std::is_integral<T>::value, int>::type = 0>
-NUMERIC_CONSTEXPR_20 inline bool operator||(const decimal& lhs, T rhs) noexcept {
+NUMERIC_CONSTEXPR_20 bool operator||(const decimal& lhs, T rhs) noexcept {
     return static_cast<bool>(lhs) || (rhs != 0);
 }
 
@@ -1092,7 +1092,7 @@ NUMERIC_CONSTEXPR_20 inline bool operator||(const decimal& lhs, T rhs) noexcept 
 /// <param name="rhs">右 decimal</param>
 /// <returns>邏輯或結果</returns>
 template <typename T, typename std::enable_if<std::is_integral<T>::value, int>::type = 0>
-NUMERIC_CONSTEXPR_20 inline bool operator||(T lhs, const decimal& rhs) noexcept {
+NUMERIC_CONSTEXPR_20 bool operator||(T lhs, const decimal& rhs) noexcept {
     return (lhs != 0) || static_cast<bool>(rhs);
 }
 

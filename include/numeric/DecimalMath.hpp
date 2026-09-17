@@ -114,7 +114,7 @@ namespace detail {
 /// </summary>
 /// <param name="x">輸入數值</param>
 /// <returns>若為 NaN 回傳 true，否則回傳 false</returns>
-NUMERIC_NODISCARD NUMERIC_CONSTEXPR_20 inline bool isnan(const decimal& x) noexcept {
+NUMERIC_NODISCARD NUMERIC_CONSTEXPR_20 bool isnan(const decimal& x) noexcept {
     return x.is_nan();
 }
 
@@ -123,7 +123,7 @@ NUMERIC_NODISCARD NUMERIC_CONSTEXPR_20 inline bool isnan(const decimal& x) noexc
 /// </summary>
 /// <param name="x">輸入數值</param>
 /// <returns>若為無窮大回傳 true，否則回傳 false</returns>
-NUMERIC_NODISCARD NUMERIC_CONSTEXPR_20 inline bool isinf(const decimal& x) noexcept {
+NUMERIC_NODISCARD NUMERIC_CONSTEXPR_20 bool isinf(const decimal& x) noexcept {
     return x.is_infinite();
 }
 
@@ -132,7 +132,7 @@ NUMERIC_NODISCARD NUMERIC_CONSTEXPR_20 inline bool isinf(const decimal& x) noexc
 /// </summary>
 /// <param name="x">輸入數值</param>
 /// <returns>若非 NaN 且非無窮大回傳 true，否則回傳 false</returns>
-NUMERIC_NODISCARD NUMERIC_CONSTEXPR_20 inline bool isfinite(const decimal& x) noexcept {
+NUMERIC_NODISCARD NUMERIC_CONSTEXPR_20 bool isfinite(const decimal& x) noexcept {
     return x.is_finite();
 }
 
@@ -141,7 +141,7 @@ NUMERIC_NODISCARD NUMERIC_CONSTEXPR_20 inline bool isfinite(const decimal& x) no
 /// </summary>
 /// <param name="x">輸入數值</param>
 /// <returns>若為負數回傳 true，否則回傳 false</returns>
-NUMERIC_NODISCARD NUMERIC_CONSTEXPR_20 inline bool signbit(const decimal& x) noexcept {
+NUMERIC_NODISCARD NUMERIC_CONSTEXPR_20 bool signbit(const decimal& x) noexcept {
     return x.sign() < 0 || x.unscaled().sign() < 0;
 }
 
@@ -151,7 +151,7 @@ NUMERIC_NODISCARD NUMERIC_CONSTEXPR_20 inline bool signbit(const decimal& x) noe
 /// <param name="mag">數值大小</param>
 /// <param name="sgn">符號來源</param>
 /// <returns>調整符號後之數值</returns>
-NUMERIC_NODISCARD NUMERIC_CONSTEXPR_20 inline decimal copysign(const decimal& mag, const decimal& sgn) noexcept {
+NUMERIC_NODISCARD NUMERIC_CONSTEXPR_20 decimal copysign(const decimal& mag, const decimal& sgn) noexcept {
     if (mag.is_nan()) {
         return mag;
     }
@@ -168,7 +168,7 @@ NUMERIC_NODISCARD NUMERIC_CONSTEXPR_20 inline decimal copysign(const decimal& ma
 /// </summary>
 /// <param name="x">輸入數值</param>
 /// <returns>絕對值結果</returns>
-NUMERIC_NODISCARD NUMERIC_CONSTEXPR_20 inline decimal abs(const decimal& x) noexcept {
+NUMERIC_NODISCARD NUMERIC_CONSTEXPR_20 decimal abs(const decimal& x) noexcept {
     if (x.is_nan()) {
         return x;
     }
@@ -190,7 +190,7 @@ NUMERIC_NODISCARD NUMERIC_CONSTEXPR_20 inline decimal abs(const decimal& x) noex
 /// </summary>
 /// <param name="x">輸入數值</param>
 /// <returns>向下取整後之整數</returns>
-NUMERIC_NODISCARD NUMERIC_CONSTEXPR_20 inline decimal floor(const decimal& x) {
+NUMERIC_NODISCARD NUMERIC_CONSTEXPR_20 decimal floor(const decimal& x) {
     if (x.is_nan() || x.is_infinite()) {
         return x;
     }
@@ -216,7 +216,7 @@ NUMERIC_NODISCARD NUMERIC_CONSTEXPR_20 inline decimal floor(const decimal& x) {
 /// </summary>
 /// <param name="x">輸入數值</param>
 /// <returns>向上取整後之整數</returns>
-NUMERIC_NODISCARD NUMERIC_CONSTEXPR_20 inline decimal ceil(const decimal& x) {
+NUMERIC_NODISCARD NUMERIC_CONSTEXPR_20 decimal ceil(const decimal& x) {
     if (x.is_nan() || x.is_infinite()) {
         return x;
     }
@@ -242,7 +242,7 @@ NUMERIC_NODISCARD NUMERIC_CONSTEXPR_20 inline decimal ceil(const decimal& x) {
 /// </summary>
 /// <param name="x">輸入數值</param>
 /// <returns>截斷後之整數</returns>
-NUMERIC_NODISCARD NUMERIC_CONSTEXPR_20 inline decimal trunc(const decimal& x) {
+NUMERIC_NODISCARD NUMERIC_CONSTEXPR_20 decimal trunc(const decimal& x) {
     if (x.is_nan() || x.is_infinite()) {
         return x;
     }
@@ -261,7 +261,7 @@ NUMERIC_NODISCARD NUMERIC_CONSTEXPR_20 inline decimal trunc(const decimal& x) {
 /// </summary>
 /// <param name="x">輸入數值</param>
 /// <returns>四捨五入後之整數</returns>
-NUMERIC_NODISCARD NUMERIC_CONSTEXPR_20 inline decimal round(const decimal& x) {
+NUMERIC_NODISCARD NUMERIC_CONSTEXPR_20 decimal round(const decimal& x) {
     if (x.is_nan() || x.is_infinite()) {
         return x;
     }
@@ -938,7 +938,7 @@ namespace std {
 /// </summary>
 /// <param name="x">輸入數值</param>
 /// <returns>若為 NaN 回傳 true</returns>
-NUMERIC_CONSTEXPR_20 inline bool isnan(const numeric::decimal& x) noexcept {
+NUMERIC_CONSTEXPR_20 bool isnan(const numeric::decimal& x) noexcept {
     return numeric::isnan(x);
 }
 
@@ -947,7 +947,7 @@ NUMERIC_CONSTEXPR_20 inline bool isnan(const numeric::decimal& x) noexcept {
 /// </summary>
 /// <param name="x">輸入數值</param>
 /// <returns>若為無窮大回傳 true</returns>
-NUMERIC_CONSTEXPR_20 inline bool isinf(const numeric::decimal& x) noexcept {
+NUMERIC_CONSTEXPR_20 bool isinf(const numeric::decimal& x) noexcept {
     return numeric::isinf(x);
 }
 
@@ -956,7 +956,7 @@ NUMERIC_CONSTEXPR_20 inline bool isinf(const numeric::decimal& x) noexcept {
 /// </summary>
 /// <param name="x">輸入數值</param>
 /// <returns>若為有限值回傳 true</returns>
-NUMERIC_CONSTEXPR_20 inline bool isfinite(const numeric::decimal& x) noexcept {
+NUMERIC_CONSTEXPR_20 bool isfinite(const numeric::decimal& x) noexcept {
     return numeric::isfinite(x);
 }
 
@@ -965,7 +965,7 @@ NUMERIC_CONSTEXPR_20 inline bool isfinite(const numeric::decimal& x) noexcept {
 /// </summary>
 /// <param name="x">輸入數值</param>
 /// <returns>若為負回傳 true</returns>
-NUMERIC_CONSTEXPR_20 inline bool signbit(const numeric::decimal& x) noexcept {
+NUMERIC_CONSTEXPR_20 bool signbit(const numeric::decimal& x) noexcept {
     return numeric::signbit(x);
 }
 
@@ -975,7 +975,7 @@ NUMERIC_CONSTEXPR_20 inline bool signbit(const numeric::decimal& x) noexcept {
 /// <param name="mag">大小</param>
 /// <param name="sgn">符號</param>
 /// <returns>調整後之數值</returns>
-NUMERIC_CONSTEXPR_20 inline numeric::decimal copysign(const numeric::decimal& mag, const numeric::decimal& sgn) noexcept {
+NUMERIC_CONSTEXPR_20 numeric::decimal copysign(const numeric::decimal& mag, const numeric::decimal& sgn) noexcept {
     return numeric::copysign(mag, sgn);
 }
 
@@ -984,7 +984,7 @@ NUMERIC_CONSTEXPR_20 inline numeric::decimal copysign(const numeric::decimal& ma
 /// </summary>
 /// <param name="x">輸入數值</param>
 /// <returns>絕對值結果</returns>
-NUMERIC_CONSTEXPR_20 inline numeric::decimal abs(const numeric::decimal& x) noexcept {
+NUMERIC_CONSTEXPR_20 numeric::decimal abs(const numeric::decimal& x) noexcept {
     return numeric::abs(x);
 }
 
@@ -993,7 +993,7 @@ NUMERIC_CONSTEXPR_20 inline numeric::decimal abs(const numeric::decimal& x) noex
 /// </summary>
 /// <param name="x">輸入數值</param>
 /// <returns>向下取整結果</returns>
-NUMERIC_CONSTEXPR_20 inline numeric::decimal floor(const numeric::decimal& x) {
+NUMERIC_CONSTEXPR_20 numeric::decimal floor(const numeric::decimal& x) {
     return numeric::floor(x);
 }
 
@@ -1002,7 +1002,7 @@ NUMERIC_CONSTEXPR_20 inline numeric::decimal floor(const numeric::decimal& x) {
 /// </summary>
 /// <param name="x">輸入數值</param>
 /// <returns>向上取整結果</returns>
-NUMERIC_CONSTEXPR_20 inline numeric::decimal ceil(const numeric::decimal& x) {
+NUMERIC_CONSTEXPR_20 numeric::decimal ceil(const numeric::decimal& x) {
     return numeric::ceil(x);
 }
 
@@ -1011,7 +1011,7 @@ NUMERIC_CONSTEXPR_20 inline numeric::decimal ceil(const numeric::decimal& x) {
 /// </summary>
 /// <param name="x">輸入數值</param>
 /// <returns>朝零捨入結果</returns>
-NUMERIC_CONSTEXPR_20 inline numeric::decimal trunc(const numeric::decimal& x) {
+NUMERIC_CONSTEXPR_20 numeric::decimal trunc(const numeric::decimal& x) {
     return numeric::trunc(x);
 }
 
@@ -1020,7 +1020,7 @@ NUMERIC_CONSTEXPR_20 inline numeric::decimal trunc(const numeric::decimal& x) {
 /// </summary>
 /// <param name="x">輸入數值</param>
 /// <returns>四捨五入結果</returns>
-NUMERIC_CONSTEXPR_20 inline numeric::decimal round(const numeric::decimal& x) {
+NUMERIC_CONSTEXPR_20 numeric::decimal round(const numeric::decimal& x) {
     return numeric::round(x);
 }
 
